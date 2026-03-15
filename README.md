@@ -1,53 +1,65 @@
-# Battlecode 2025 Scaffold - Java
+# Tubes 1 Strategi Algoritma - Battlecode 2025
 
-This is the Battlecode 2025 Java scaffold, containing an `examplefuncsplayer`. Read https://play.battlecode.org/bc25java/quick_start !
+Ini adalah repository untuk source code implementasi bot Battlecode 2025 dengan menggunakan pendekatan Algoritma Greedy. Terdapat 3 varian bot yang telah dibuat: `mainbot`, `snowball`, dan `splasher_specialist`.
 
+## Author
+* **Al Farabi (13524086) dan Fahd Muhammad Zahid (13524078)**
 
-### Project Structure
+## Penjelasan Singkat Algoritma Greedy
 
-- `README.md`
-    This file.
-- `build.gradle`
-    The Gradle build file used to build and run players.
-- `src/`
-    Player source code.
-- `test/`
-    Player test code.
-- `client/`
-    Contains the client. The proper executable can be found in this folder (don't move this!)
-- `build/`
-    Contains compiled player code and other artifacts of the build process. Can be safely ignored.
-- `matches/`
-    The output folder for match files.
-- `maps/`
-    The default folder for custom maps.
-- `gradlew`, `gradlew.bat`
-    The Unix (OS X/Linux) and Windows versions, respectively, of the Gradle wrapper. These are nifty scripts that you can execute in a terminal to run the Gradle build tasks of this project. If you aren't planning to do command line development, these can be safely ignored.
-- `gradle/`
-    Contains files used by the Gradle wrapper scripts. Can be safely ignored.
+### 1. `mainbot`
+- **Tower Base Building**: Greedily menyeimbangkan rasio pasukan (~50% Splasher, ~30% Soldier, ~20% Mopper). Tower selalu memprioritaskan untuk men-spawn tipe unit yang rasionya paling rendah saat ini.
+- **Splasher**: Memilih target serangan secara greedy. Unit mengevaluasi semua posisi dalam jangkauan dan menghitung berapa banyak petak (tile) dalam area efek (AoE) yang kosong atau memiliki cat musuh. Splasher akan menyerang target dengan *score* tertinggi (jumlah petak terbanyak yang bisa dicat).
+- **Mopper**: Pemilihan target musuh bersifat greedy. Memprioritaskan penyerangan terhadap Splasher musuh terdekat, kemudian unit musuh lainnya. Mopper juga secara greedy menyerang petak dengan cat musuh terdekat untuk membersihkannya.
+- **Soldier**: Pemilihan ruin bersifat greedy. Mengevaluasi semua ruin yang terlihat dan memberikan skor (bias besar untuk ruin yang berada di "sektor" yang ditugaskan, dikurangi kuadrat jarak tempuh). Soldier akan bergerak dan membangun di ruin dengan skor tertinggi.
 
-### How to get started
+### 2. `snowball`
+- **Tower Base Building**: Urutan pembangunan tower didasarkan pada progresi tetap yang secara greedy mengoptimalkan pertumbuhan ekonomi di awal (Money -> Paint -> Money -> Paint). Untuk *spawn*, Early Game difokuskan pada Soldier. Mid-Late game mempertahankan rasio pembentukan 1 Soldier : 1 Splasher.
+- **Splasher**: Heuristik serangan mengevaluasi lokasi potensial dengan memberikan **prioritas sangat tinggi (bonus skor besar)** jika serangan mengenai area di sekitar `targetRuin` (ruin yang sedang direbut/dibangun oleh Soldier kawan), ditambah dengan jumlah petak kosong/musuh di radius ledakan AoE.
+- **Soldier**: Mencari ruin dengan jarak absolut terdekat (`minDist`) yang belum memiliki tower dan tidak sedang diokupasi oleh Soldier kawan lain secara greedy.
+- **Navigation (`navigateGreedy`)**: Memilih arah pergerakan secara greedy yang memaksimalkan skor berdasarkan jarak ke petak yang belum dicat/milik musuh, memberikan penalti jika terlalu dekat dengan musuh atau kawan lain, sekaligus menambahkan sedikit tarikan penjelajahan (exploration) menuju lokasi simetris di seberang peta.
 
-You are free to directly edit `examplefuncsplayer`.
-However, we recommend you make a new bot by copying `examplefuncsplayer` to a new package under the `src` folder.
+### 3. `splasher_specialist`
+- **Splasher Attack**: Mengiterasi semua lokasi serangan yang valid dan menghitung berapa banyak petak di dalam AoE yang kosong atau memiliki cat musuh. Unit ini menyerang target dengan jumlah *paintable tiles* tertinggi secara greedy.
+- **Navigation (`greedyNavigation`)**: Menghitung `unpaintedHeuristic` untuk setiap arah pergerakan yang memungkinkan, memberi bobot berbanding terbalik dengan akar kuadrat jarak petak sasaran. Secara greedy, unit akan bergerak ke arah yang memaksimalkan akses ke wilayah yang belum dicat. Jika area sekitarnya sudah penuh dicat, unit akan bergerak secara eksklusif menuju wilayah simetris di seberang peta.
 
-### Useful Commands
+## Requirement Program
+- **Java 17** (atau versi lebih baru)
+- **Gradle** (Sudah disediakan *wrapper* `gradlew` / `gradlew.bat` di dalam direktori)
+- Koneksi internet (dibutuhkan pada saat awal *build* untuk mengunduh dependensi Gradle dan *client* Battlecode)
 
-- `./gradlew build`
-    Compiles your player
-- `./gradlew run`
-    Runs a game with the settings in gradle.properties
-- `./gradlew update`
-    Update configurations for the latest version -- run this often
-- `./gradlew zipForSubmit`
-    Create a submittable zip file
-- `./gradlew tasks`
-    See what else you can do!
+## Langkah-langkah Kompilasi dan Build Program
 
+Buka terminal / *command prompt* dan arahkan ke direktori utama tugas ini. Gunakan perintah berikut sesuai dengan spesifikasi OS (Windows menggunakan `gradlew.bat`, Linux/macOS menggunakan `./gradlew`):
 
-### Configuration 
+1. **Kompilasi Program (Build)**
+   ```bash
+   # Windows
+   gradlew.bat build
+   
+   # Linux/macOS
+   ./gradlew build
+   ```
 
-Look at `gradle.properties` for project-wide configuration.
+2. **Menjalankan Pertandingan (Run Game)**
+   Pastikan konfigurasi `gradle.properties` sudah diatur untuk map dan bot yang ingin dilawan.
+   ```bash
+   # Windows
+   gradlew.bat run
+   
+   # Linux/macOS
+   ./gradlew run
+   ```
 
-If you are having any problems with the default client, please report to teh devs and
-feel free to set the `compatibilityClient` configuration to `true` to download a different version of the client.
+3. **Membuat File ZIP Submisi (Build for Submission)**
+   Zips source code bot Anda untuk dikumpulkan ke platform Battlecode.
+   ```bash
+   # Windows
+   gradlew.bat zipForSubmit
+   
+   # Linux/macOS
+   ./gradlew zipForSubmit
+   ```
+
+---
+
