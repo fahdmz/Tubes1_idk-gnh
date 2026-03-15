@@ -5,8 +5,9 @@ apply plugin: 'scala'
 
 // Compatibility version: Java 21
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 // Vaildate Java version
