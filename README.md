@@ -50,16 +50,5 @@ Buka terminal / *command prompt* dan arahkan ke direktori utama tugas ini. Gunak
    # Linux/macOS
    ./gradlew run
    ```
-
-3. **Membuat File ZIP Submisi (Build for Submission)**
-   Zips source code bot Anda untuk dikumpulkan ke platform Battlecode.
-   ```bash
-   # Windows
-   gradlew.bat zipForSubmit
-   
-   # Linux/macOS
-   ./gradlew zipForSubmit
-   ```
-
 ---
 
