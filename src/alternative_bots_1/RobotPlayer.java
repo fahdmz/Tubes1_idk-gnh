@@ -1,4 +1,4 @@
-package snowball;
+package alternative_bots_1;
 
 import battlecode.common.*;
 import java.util.Random;
@@ -114,7 +114,7 @@ public class RobotPlayer {
     }
 
     /**
-     * Cek refill, anti-paralysis 
+     * Cek refill, anti-paralysis
      */
     static void handleRefill(RobotController rc) throws GameActionException {
         int paint = rc.getPaint();
